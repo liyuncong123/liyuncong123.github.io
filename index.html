@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>有机化学综合学习系统</title>
+<style>
+:root {
+--primary-color: #2c6fbb;
+--secondary-color: #3498db;
+--accent-color: #e74c3c;
+--success-color: #27ae60;
+--warning-color: #f39c12;
+--light-bg: #f8f9fa;
+--dark-bg: #e9ecef;
+--border-color: #ced4da;
+--text-color: #2c3e50;
+}
+
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+background: linear-gradient(135deg, #1a2980, #26d0ce);
+color: var(--text-color);
+padding: 20px;
+min-height: 100vh;
+line-height: 1.6;
+}
+
+.container {
+max-width: 1000px;
+margin: 20px auto;
+background-color: white;
+border-radius: 16px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+overflow: hidden;
+}
+
+header {
+background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+color: white;
+padding: 28px 30px;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+
+header::before {
+content: "";
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+transform: rotate(30deg);
+}
+
+h1 {
+font-size: 2.4rem;
+margin-bottom: 8px;
+font-weight: 700;
+letter-spacing: 0.5px;
+position: relative;
+text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitle {
+font-size: 1.15rem;
+opacity: 0.92;
+font-weight: 300;
+position: relative;
+}
+
+.main-content {
+padding: 25px;
+display: grid;
+grid-template-columns: 1fr;
+gap: 25px;
+}
+
+.section {
+background-color: var(--light-bg);
+border-radius: 12px;
+padding: 22px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+transition: transform 0.3s ease;
+}
+
+.section:hover {
+transform: translateY(-3px);
+}
+
+.section-title {
+font-size: 1.35rem;
+margin-bottom: 20px;
+color: var(--primary-color);
+padding-bottom: 12px;
+border-bottom: 3px solid var(--border-color);
+font-weight: 600;
+display: flex;
+align-items: center;
+}
+
+.section-title::before {
+content: "•";
+margin-right: 10px;
+color: var(--accent-color);
+font-size: 1.8rem;
+}
+
+.compounds-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 15px;
+margin-top: 10px;
+}
+
+.compound-btn {
+background: white;
+border: 2px solid var(--border-color);
+border-radius: 10px;
+padding: 14px 10px;
+text-align: center;
+cursor: pointer;
+transition: all 0.3s ease;
+font-weight: 500;
+font-size: 0.97rem;
+position: relative;
+overflow: hidden;
+}
+
+.compound-btn::after {
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0));
+opacity: 0;
+transition: opacity 0.3s;
+}
+
+.compound-btn:hover {
+border-color: var(--primary-color);
+background-color: rgba(44, 111, 187, 0.08);
+transform: translateY(-3px);
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.compound-btn:hover::after {
+opacity: 1;
+}
+
+.compound-btn.active {
+background-color: rgba(44, 111, 187, 0.18);
+border-color: var(--primary-color);
+color: var(--primary-color);
+font-weight: 600;
+box-shadow: 0 4px 10px rgba(44, 111, 187, 0.2);
+}
+
+.current-compound {
+background-color: white;
+padding: 16px;
+border-radius: 10px;
+border-left: 5px solid var(--primary-color);
+font-size: 1.15rem;
+font-weight: 500;
+margin-bottom: 20px;
+box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+display: flex;
+align-items: center;
+}
+
+.current-compound::before {
+content: "📌";
+margin-right: 10px;
+font-size: 1.3rem;
+}
+
+.question-area {
+background-color: white;
+padding: 25px;
+border-radius: 12px;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+min-height: 280px;
+position: relative;
+}
+
+.question-text {
+font-size: 1.25rem;
+margin-bottom: 25px;
+line-height: 1.8;
+color: #2c3e50;
+}
+
+.question-text .highlight {
+background: linear-gradient(to right, rgba(52, 152, 219, 0.15), transparent);
+padding: 2px 8px;
+border-radius: 4px;
+font-weight: 500;
+}
+
+.options-container {
+display: grid;
+grid-template-columns: 1fr;
+gap: 15px;
+margin-bottom: 25px;
+}
+
+.option-btn {
+background: white;
+border: 2px solid var(--border-color);
+border-radius: 10px;
+padding: 15px 18px;
+text-align: left;
+cursor: pointer;
+transition: all 0.2s ease;
+font-size: 1.05rem;
+display: flex;
+align-items: center;
+position: relative;
+}
+
+.option-btn::before {
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+width: 5px;
+height: 100%;
+background-color: var(--secondary-color);
+border-radius: 10px 0 0 10px;
+opacity: 0;
+transition: opacity 0.3s;
+}
+
+.option-btn:hover {
+border-color: var(--secondary-color);
+transform: translateX(5px);
+}
+
+.option-btn:hover::before {
+opacity: 1;
+}
+
+.option-btn.correct {
+background-color: rgba(39, 174, 96, 0.1);
+border-color: var(--success-color);
+color: #219653;
+font-weight: 600;
+}
+
+.option-btn.incorrect {
+background-color: rgba(231, 76, 60, 0.08);
+border-color: var(--accent-color);
+color: #c0392b;
+}
+
+.input-group {
+margin-bottom: 18px;
+}
+
+label {
+display: block;
+margin-bottom: 10px;
+font-weight: 500;
+color: var(--text-color);
+display: flex;
+align-items: center;
+}
+
+label::before {
+content: "•";
+margin-right: 8px;
+color: var(--accent-color);
+font-size: 1.5rem;
+}
+
+input[type="text"] {
+width: 100%;
+padding: 15px;
+border: 2px solid var(--border-color);
+border-radius: 10px;
+font-size: 1.05rem;
+transition: all 0.3s;
+}
+
+input[type="text"]:focus {
+outline: none;
+border-color: var(--secondary-color);
+box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+}
+
+.shortcut-hint {
+background-color: rgba(52, 152, 219, 0.08);
+padding: 14px 18px;
+border-radius: 10px;
+font-size: 0.95rem;
+margin: 20px 0;
+color: #2c3e50;
+border-left: 4px solid var(--secondary-color);
+}
+
+.controls {
+display: flex;
+gap: 18px;
+margin-top: 25px;
+flex-wrap: wrap;
+}
+
+button {
+padding: 14px 28px;
+border: none;
+border-radius: 10px;
+font-size: 1.05rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+button i {
+font-size: 1.2rem;
+}
+
+.btn-primary {
+background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+color: white;
+}
+
+.btn-primary:hover {
+background: linear-gradient(to right, #245fa7, #2d8ac8);
+transform: translateY(-3px);
+box-shadow: 0 6px 15px rgba(44, 111, 187, 0.3);
+}
+
+.btn-secondary {
+background-color: var(--dark-bg);
+color: var(--text-color);
+}
+
+.btn-secondary:hover {
+background-color: #dde5ed;
+transform: translateY(-3px);
+box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.btn-submit {
+background: linear-gradient(to right, var(--success-color), #2ecc71);
+color: white;
+padding: 12px 25px;
+}
+
+.status-bar {
+background-color: var(--dark-bg);
+padding: 14px 25px;
+font-size: 1rem;
+border-top: 1px solid var(--border-color);
+color: #4a5568;
+display: flex;
+align-items: center;
+}
+
+.status-bar::before {
+content: "ⓘ";
+margin-right: 10px;
+font-size: 1.2rem;
+}
+
+.subscript {
+position: relative;
+bottom: -0.25em;
+font-size: 0.75em;
+}
+
+.equation {
+font-family: 'Cambria', Georgia, serif;
+font-size: 1.4rem;
+font-weight: 500;
+letter-spacing: 0.5px;
+margin: 10px 0;
+padding: 10px;
+background-color: rgba(236, 240, 241, 0.5);
+border-radius: 8px;
+display: inline-block;
+}
+
+.highlight {
+background: linear-gradient(to right, rgba(243, 156, 18, 0.2), transparent);
+padding: 3px 8px;
+border-radius: 4px;
+font-weight: 500;
+}
+
+.modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0,0,0,0.7);
+z-index: 1000;
+align-items: center;
+justify-content: center;
+}
+
+.modal-content {
+background-color: white;
+border-radius: 16px;
+width: 90%;
+max-width: 500px;
+box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+overflow: hidden;
+animation: modalAppear 0.4s ease;
+}
+
+@keyframes modalAppear {
+from {
+opacity: 0;
+transform: translateY(-50px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.modal-header {
+background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+color: white;
+padding: 22px;
+text-align: center;
+}
+
+.modal-header h3 {
+font-size: 1.6rem;
+font-weight: 600;
+}
+
+.modal-body {
+padding: 25px;
+}
+
+.modal-options {
+display: grid;
+grid-template-columns: 1fr;
+gap: 15px;
+}
+
+.modal-btn {
+padding: 16px;
+border-radius: 10px;
+border: 2px solid var(--border-color);
+background-color: white;
+font-size: 1.1rem;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.3s ease;
+text-align: center;
+}
+
+.modal-btn:hover {
+background-color: rgba(52, 152, 219, 0.1);
+border-color: var(--secondary-color);
+transform: translateY(-3px);
+}
+
+.feedback {
+padding: 20px;
+background-color: #f8f9fa;
+border-radius: 10px;
+margin-top: 20px;
+border-left: 4px solid var(--success-color);
+display: none;
+}
+
+.feedback h4 {
+color: var(--success-color);
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.feedback.correct {
+border-left-color: var(--success-color);
+}
+
+.feedback.incorrect {
+border-left-color: var(--accent-color);
+}
+
+.feedback.incorrect h4 {
+color: var(--accent-color);
+}
+
+/* 移动端快捷键按钮样式 */
+.mobile-shortcuts {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin: 15px 0;
+justify-content: center;
+}
+
+.mobile-shortcut-btn {
+padding: 10px 15px;
+background-color: rgba(52, 152, 219, 0.1);
+border: 2px solid var(--secondary-color);
+border-radius: 8px;
+cursor: pointer;
+font-weight: 500;
+transition: all 0.2s ease;
+min-width: 70px;
+text-align: center;
+}
+
+.mobile-shortcut-btn:hover {
+background-color: rgba(52, 152, 219, 0.2);
+transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+.main-content {
+padding: 15px;
+}
+
+.section {
+padding: 18px;
+}
+
+.compounds-grid {
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.controls {
+flex-direction: column;
+}
+
+button {
+width: 100%;
+}
+
+.question-area {
+padding: 20px;
+}
+
+.modal-content {
+width: 95%;
+}
+
+.mobile-shortcuts {
+justify-content: space-between;
+}
+
+.mobile-shortcut-btn {
+flex: 1;
+min-width: 60px;
+padding: 12px 8px;
+font-size: 0.9rem;
+}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<header>
+<h1>有机化学综合学习系统</h1>
+<div class="subtitle">网页版 - 有机化合物学习与练习平台</div>
+</header>
+<div class="main-content">
+<div class="section">
+<h2 class="section-title">选择化合物</h2>
+<div class="compounds-grid" id="compounds-container">
+<!-- 化合物按钮将通过JS动态生成 -->
+</div>
+</div>
+<div class="section">
+<h2 class="section-title">练习模块</h2>
+<div class="current-compound" id="current-compound">
+当前未选择化合物
+</div>
+<div class="question-area">
+<div class="question-text" id="question-text">
+请从上方选择一种有机化合物，然后点击<span class="highlight">"开始练习"</span>按钮
+</div>
+<div class="options-container" id="options-container">
+<!-- 选项按钮将通过JS动态生成 -->
+</div>
+<div class="input-group" id="equation-group" style="display: none;">
+<label for="equation-input">方程式:</label>
+<input type="text" id="equation-input" placeholder="输入化学方程式 (如: CH4 + O2 → CO2 + H2O)">
+</div>
+<div class="input-group" id="condition-group" style="display: none;">
+<label for="condition-input">条件:</label>
+<input type="text" id="condition-input" placeholder="输入反应条件 (如: 点燃, 催化剂)">
+</div>
+<!-- 移动端快捷键按钮 -->
+<div class="mobile-shortcuts" id="mobile-shortcuts" style="display: none;">
+<div class="mobile-shortcut-btn" data-symbol="→">→ (Q)</div>
+<div class="mobile-shortcut-btn" data-symbol="⇌">⇌ (W)</div>
+<div class="mobile-shortcut-btn" data-symbol="=">= (S)</div>
+<div class="mobile-shortcut-btn" data-symbol="≡">≡ (E)</div>
+</div>
+<div class="shortcut-hint" id="shortcut-hint" style="display: none;">
+</div>
+<div style="display: flex; gap: 15px; margin-top: 10px; display: none;" id="submit-container">
+<button class="btn-submit" id="submit-btn">
+<i>✓</i> 提交答案
+</button>
+</div>
+<div class="feedback" id="feedback">
+<h4><i>✓</i> 正确答案</h4>
+<div id="correct-answer"></div>
+</div>
+<div class="controls">
+<button class="btn-primary" id="start-btn">
+<i>▶</i> 开始练习
+</button>
+<button class="btn-secondary" id="next-btn" disabled style="display: none;">
+<i>↻</i> 下一题
+</button>
+<button class="btn-secondary" id="quit-btn">
+<i>✕</i> 退出系统
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="status-bar" id="status-bar">
+系统准备就绪，请选择化合物开始学习
+</div>
+</div>
+
+<!-- 模块选择模态框 -->
+<div class="modal" id="module-modal">
+<div class="modal-content">
+<div class="modal-header">
+<h3>选择练习模块</h3>
+</div>
+<div class="modal-body">
+<p style="margin-bottom: 20px; font-size: 1.1rem; text-align: center;">
+请选择要练习的模块：
+</p>
+<div class="modal-options">
+<button class="modal-btn" data-module="1">英文名称练习</button>
+<button class="modal-btn" data-module="2">官能团中文名称练习</button>
+<button class="modal-btn" data-module="3">官能团化学式练习</button>
+<button class="modal-btn" data-module="4">反应类型练习</button>
+<button class="modal-btn" data-module="5">方程式书写练习</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+// 化合物数据
+const compounds = [
+{
+"序号": 1,
+"中文名称": "烷烃",
+"英文名称": "alkane",
+"官能团中文": "无",
+"官能团英文": "None",
+"反应": [
+{
+"类型": "取代反应",
+"描述": "甲烷和氯气发生取代反应",
+"方程式": "CH4 + Cl2 → CH3Cl + HCl",
+"条件": "光照"
+},
+{
+"类型": "氧化反应",
+"描述": "甲烷在氧气中完全燃烧",
+"方程式": "CH4 + 2O2 → CO2 + 2H2O",
+"条件": "点燃"
+}
+]
+},
+{
+"序号": 2,
+"中文名称": "烯烃",
+"英文名称": "alkene",
+"官能团中文": "碳碳双键",
+"官能团英文": "C=C",
+"反应": [
+{
+"类型": "氧化反应",
+"描述": "乙烯在氧气中完全燃烧",
+"方程式": "CH2=CH2 + 3O2 → 2CO2 + 2H2O",
+"条件": "点燃"
+},
+{
+"类型": "加成反应",
+"描述": "乙烯与氯气发生加成反应",
+"方程式": "CH2=CH2 + Cl2 → CH2ClCH2Cl",
+"条件": "无"
+},
+{
+"类型": "加成反应",
+"描述": "乙烯和氢气发生加成反应",
+"方程式": "CH2=CH2 + H2 → CH3CH3",
+"条件": "Ni"
+}
+]
+},
+{
+"序号": 3,
+"中文名称": "炔烃",
+"英文名称": "alkyne",
+"官能团中文": "碳碳三键",
+"官能团英文": "C≡C",
+"反应": [
+{
+"类型": "氧化反应",
+"描述": "乙炔在氧气中完全燃烧",
+"方程式": "2CH≡CH + 5O2 → 4CO2 + 2H2O",
+"条件": "点燃"
+},
+{
+"类型": "加成反应",
+"描述": "乙炔和氯气发生加成反应",
+"方程式": "CH≡CH + 2Cl2 → CHCl2CHCl2",
+"条件": "无"
+}
+]
+},
+{
+"序号": 4,
+"中文名称": "芳香烃",
+"英文名称": "aromatic hydrocarbon",
+"官能团中文": "无",
+"官能团英文": "None",
+"反应": [
+{
+"类型": "取代反应",
+"描述": "苯和硝酸发生硝化反应",
+"方程式": "C6H6 + HNO3 → C6H5NO2 + H2O",
+"条件": "浓H2SO4,加热"
+},
+{
+"类型": "加成反应",
+"描述": "苯与氢气发生加成反应",
+"方程式": "C6H6 + 3H2 → C6H12",
+"条件": "Pt,加热"
+}
+]
+},
+{
+"序号": 5,
+"中文名称": "醇",
+"英文名称": "alcohol",
+"官能团中文": "羟基",
+"官能团英文": "-OH",
+"反应": [
+{
+"类型": "消去反应",
+"描述": "乙醇发生消去反应",
+"方程式": "CH3CH2OH → CH2=CH2 + H2O",
+"condition": "浓H2SO4,170℃"
+},
+{
+"类型": "取代反应",
+"描述": "乙醇和氢溴酸发生取代反应",
+"方程式": "CH3CH2OH + HBr → CH3CH2Br + H2O",
+"condition": "加热"
+},
+{
+"类型": "取代反应",
+"描述": "乙醇和金属钠发生取代反应",
+"方程式": "2CH3CH2OH + 2Na → 2CH3CH2ONa + H2",
+"condition": "无"
+},
+{
+"类型": "取代反应",
+"描述": "两分子乙醇发生取代反应",
+"方程式": "2CH3CH2OH → CH3CH2OCH2CH3 + H2O",
+"condition": "浓H2SO4,140℃"
+},
+{
+"类型": "氧化反应",
+"描述": "乙醇与氧气发生氧化反应",
+"方程式": "2CH3CH2OH + O2 → 2CH3CHO + 2H2O",
+"condition": "Cu,加热"
+},
+{
+"类型": "酯化反应",
+"描述": "乙醇与乙酸发生酯化反应",
+"方程式": "CH3CH2OH + CH3COOH ⇌ CH3COOCH2CH3 + H2O",
+"condition": "浓H2SO4,加热"
+}
+]
+},
+{
+"序号": 6,
+"中文名称": "酚",
+"英文名称": "phenol",
+"官能团中文": "羟基",
+"官能团英文": "-OH",
+"反应": [
+{
+"类型": "取代反应",
+"描述": "苯酚与溴水反应",
+"方程式": "C6H5OH + 3Br2 → C6H2Br3OH + 3HBr",
+"condition": "无"
+},
+{
+"类型": "酸碱反应",
+"描述": "苯酚与氢氧化钠溶液反应",
+"方程式": "C6H5OH + NaOH → C6H5ONa + H2O",
+"condition": "无"
+}
+]
+},
+{
+"序号": 7,
+"中文名称": "醚",
+"英文名称": "ether",
+"官能团中文": "醚键",
+"官能团英文": "-O-",
+"反应": [
+{
+"类型": "水解反应",
+"描述": "乙醚与水发生水解反应",
+"方程式": "C2H5OC2H5 + H2O → 2C2H5OH",
+"condition": "酸性条件"
+}
+]
+},
+{
+"序号": 8,
+"中文名称": "醛",
+"英文名称": "aldehyde",
+"官能团中文": "醛基",
+"官能团英文": "-CHO",
+"反应": [
+{
+"类型": "氧化反应",
+"描述": "甲醛与氢氧化二铵合银发生银镜反应",
+"方程式": "HCHO + 4[Ag(NH3)2]OH → (NH4)2CO3 + 4Ag + 6NH3 + 2H2O",
+"condition": "加热"
+}
+]
+},
+{
+"序号": 9,
+"中文名称": "酮",
+"英文名称": "ketone",
+"官能团中文": "羰基",
+"官能团英文": ">C=O",
+"反应": [
+{
+"类型": "氧化反应",
+"描述": "丙酮在氧气中完全燃烧",
+"方程式": "CH3COCH3 + 4O2 → 3CO2 + 3H2O",
+"condition": "点燃"
+}
+]
+},
+{
+"序号": 10,
+"中文名称": "酸",
+"英文名称": "carboxylic acid",
+"官能团中文": "羧基",
+"官能团英文": "-COOH",
+"反应": [
+{
+"类型": "酯化反应",
+"描述": "乙酸与乙醇发生酯化反应",
+"方程式": "CH3COOH + CH3CH2OH ⇌ CH3COOCH2CH3 + H2O",
+"condition": "浓H2SO4,加热"
+}
+]
+},
+{
+"序号": 11,
+"中文名称": "酯",
+"英文名称": "ester",
+"官能团中文": "酯基",
+"官能团英文": "-COOR",
+"反应": [
+{
+"类型": "水解反应",
+"描述": "乙酸乙酯与氢氧化钠溶液发生皂化反应",
+"方程式": "CH3COOC2H5 + NaOH → CH3COONa + C2H5OH",
+"condition": "H2O,加热"
+}
+]
+},
+{
+"序号": 12,
+"中文名称": "卤代烃",
+"英文名称": "halohydrocarbon",
+"官能团中文": "卤素原子",
+"官能团英文": "-X",
+"反应": [
+{
+"类型": "消去反应",
+"描述": "溴乙烷与氢氧化钠的乙醇溶液发生消去反应",
+"方程式": "CH3CH2Br + NaOH → CH2=CH2 + NaBr + H2O",
+"condition": "CH3CH2OH,加热"
+},
+{
+"类型": "取代反应",
+"描述": "溴乙烷与氢氧化钠的水溶液发生取代反应",
+"方程式": "CH3CH2Br + NaOH → CH3CH2OH + NaBr",
+"condition": "H2O,加热"
+}
+]
+}
+];
+
+// 下标映射
+const SUBSCRIPT_MAP = {
+'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
+'5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉',
+'=': '=', '+': '+', '-': '-', '≡': '≡'
+};
+
+// DOM元素
+const compoundsContainer = document.getElementById('compounds-container');
+const currentCompoundDisplay = document.getElementById('current-compound');
+const questionText = document.getElementById('question-text');
+const optionsContainer = document.getElementById('options-container');
+const equationGroup = document.getElementById('equation-group');
+const conditionGroup = document.getElementById('condition-group');
+const equationInput = document.getElementById('equation-input');
+const conditionInput = document.getElementById('condition-input');
+const mobileShortcuts = document.getElementById('mobile-shortcuts');
+const shortcutHint = document.getElementById('shortcut-hint');
+const submitContainer = document.getElementById('submit-container');
+const submitBtn = document.getElementById('submit-btn');
+const feedback = document.getElementById('feedback');
+const correctAnswerDisplay = document.getElementById('correct-answer');
+const startBtn = document.getElementById('start-btn');
+const nextBtn = document.getElementById('next-btn');
+const quitBtn = document.getElementById('quit-btn');
+const statusBar = document.getElementById('status-bar');
+const moduleModal = document.getElementById('module-modal');
+const modalBtns = document.querySelectorAll('.modal-btn');
+
+// 应用状态
+let currentCompound = null;
+let currentQuestion = null;
+let currentOptions = [];
+let currentAnswer = null;
+let currentAnswerEquation = null;
+let currentAnswerCondition = null;
+let quizModule = null;
+let fillBlankMode = false;
+let leftPressed = false;
+let rightPressed = false;
+let currentModuleIndex = 1; // 添加当前模块索引
+
+// 初始化应用
+function initApp() {
+// 渲染化合物按钮
+compounds.forEach(compound => {
+const button = document.createElement('div');
+button.className = 'compound-btn';
+button.textContent = `${compound.序号}. ${compound.中文名称}`;
+button.addEventListener('click', () => selectCompound(compound));
+compoundsContainer.appendChild(button);
+});
+
+// 按钮事件监听
+startBtn.addEventListener('click', showModuleModal);
+nextBtn.addEventListener('click', nextQuestion);
+quitBtn.addEventListener('click', () => {
+alert('感谢使用有机化学综合学习系统！');
+});
+
+submitBtn.addEventListener('click', checkEquationAnswer);
+
+// 键盘事件监听
+equationInput.addEventListener('keydown', handleKeyDown);
+equationInput.addEventListener('keyup', handleKeyUp);
+
+// 移动端快捷键按钮事件
+const mobileShortcutBtns = document.querySelectorAll('.mobile-shortcut-btn');
+mobileShortcutBtns.forEach(btn => {
+btn.addEventListener('click', function() {
+const symbol = this.getAttribute('data-symbol');
+insertAtCursor(symbol);
+});
+});
+
+// 模块选择按钮事件
+modalBtns.forEach(btn => {
+btn.addEventListener('click', function() {
+quizModule = parseInt(this.getAttribute('data-module'));
+moduleModal.style.display = 'none';
+statusBar.textContent = `开始练习: ${this.textContent}`;
+
+// 重置模块索引
+currentModuleIndex = quizModule;
+
+// 根据选择的模块开始练习
+switch (quizModule) {
+case 1: englishNameQuiz(); break;
+case 2: functionalGroupChineseQuiz(); break;
+case 3: functionalGroupEnglishQuiz(); break;
+case 4: reactionTypeQuiz(); break;
+case 5: equationWritingQuiz(); break;
+}
+});
+});
+
+// 点击模态框外部关闭
+moduleModal.addEventListener('click', function(e) {
+if (e.target === moduleModal) {
+moduleModal.style.display = 'none';
+}
+});
+}
+
+// 显示模块选择模态框
+function showModuleModal() {
+if (!currentCompound) {
+alert('请先选择一种化合物');
+return;
+}
+moduleModal.style.display = 'flex';
+}
+
+// 选择化合物
+function selectCompound(compound) {
+currentCompound = compound;
+
+// 更新UI
+currentCompoundDisplay.textContent = `当前选择: ${compound.中文名称}`;
+statusBar.textContent = `已选择化合物: ${compound.中文名称}`;
+
+// 重置问题区域
+clearQuestion();
+startBtn.disabled = false;
+feedback.style.display = 'none';
+
+// 高亮当前选择的化合物按钮
+document.querySelectorAll('.compound-btn').forEach(btn => {
+btn.classList.remove('active');
+if (btn.textContent.includes(compound.中文名称)) {
+btn.classList.add('active');
+}
+});
+}
+
+// 清空问题区域
+function clearQuestion() {
+questionText.innerHTML = '请点击<span class="highlight">"开始练习"</span>按钮开始练习';
+optionsContainer.innerHTML = '';
+equationGroup.style.display = 'none';
+conditionGroup.style.display = 'none';
+mobileShortcuts.style.display = 'none';
+shortcutHint.style.display = 'none';
+submitContainer.style.display = 'none';
+feedback.style.display = 'none';
+fillBlankMode = false;
+nextBtn.disabled = true;
+}
+
+// 下一题
+function nextQuestion() {
+if (!currentCompound) return;
+
+// 隐藏反馈
+feedback.style.display = 'none';
+
+// 只有模块5才执行下一题功能
+if (quizModule === 5) {
+equationWritingQuiz();
+}
+}
+
+// 英文名称练习
+function englishNameQuiz() {
+fillBlankMode = false;
+const correct = currentCompound.英文名称;
+const allNames = compounds.map(c => c.英文名称);
+const options = generateOptions(correct, allNames);
+
+// 添加模块序号
+currentQuestion = `模块1/5: 化合物 <span class="highlight">${currentCompound.中文名称}</span> 的英文名称是？`;
+currentOptions = options;
+currentAnswer = correct;
+showQuestion();
+}
+
+// 官能团中文名称练习
+function functionalGroupChineseQuiz() {
+fillBlankMode = false;
+const correct = currentCompound.官能团中文;
+const allGroups = [...new Set(compounds.map(c => c.官能团中文))];
+const options = generateOptions(correct, allGroups);
+
+// 添加模块序号
+currentQuestion = `模块2/5: 化合物 <span class="highlight">${currentCompound.中文名称}</span> 的官能团中文名称是？`;
+currentOptions = options;
+currentAnswer = correct;
+showQuestion();
+}
+
+// 官能团化学式练习
+function functionalGroupEnglishQuiz() {
+fillBlankMode = false;
+const correct = currentCompound.官能团英文;
+const allGroups = [...new Set(compounds.map(c => c.官能团英文))];
+const options = generateOptions(correct, allGroups);
+
+// 添加模块序号
+currentQuestion = `模块3/5: 化合物 <span class="highlight">${currentCompound.中文名称}</span> 的官能团化学式是？`;
+currentOptions = options;
+currentAnswer = correct;
+showQuestion();
+}
+
+// 反应类型练习
+function reactionTypeQuiz() {
+fillBlankMode = false;
+if (!currentCompound.反应 || currentCompound.反应.length === 0) {
+alert('该化合物没有记录反应类型');
+return;
+}
+
+const reaction = currentCompound.反应[Math.floor(Math.random() * currentCompound.反应.length)];
+const correct = reaction.类型;
+const condition = reaction.条件 || reaction.condition || "无";
+
+// 美化方程式显示
+const equation = reaction.方程式;
+let equationParts;
+   if (equation.includes('⇌')) {
+     equationParts = equation.split('⇌');
+   } else {
+     equationParts = equation.split('→');
+   }const reactants = toSubscript(equationParts[0].trim());
+const products = toSubscript(equationParts[1] ? equationParts[1].trim() : '');
+
+// 添加模块序号
+currentQuestion = `
+<div>模块4/5: 下列 <span class="highlight">${currentCompound.中文名称}</span> 反应属于哪种类型？</div>
+<div class="equation">${reactants} → ${products}</div>
+<div>反应条件: ${condition}</div>
+`;
+
+const allTypes = [...new Set(compounds.flatMap(c => c.反应?.map(r => r.类型) || []))];
+const options = generateOptions(correct, allTypes);
+currentOptions = options;
+currentAnswer = correct;
+showQuestion();
+}
+
+// 方程式书写练习
+function equationWritingQuiz() {
+fillBlankMode = true;
+if (!currentCompound.反应 || currentCompound.反应.length === 0) {
+alert('该化合物没有记录反应方程式');
+return;
+}
+
+const reaction = currentCompound.反应[Math.floor(Math.random() * currentCompound.反应.length)];
+
+// 清理描述文本
+let desc = reaction.描述;
+desc = desc.replace(/在.*?条件下/g, '');
+desc = desc.replace(/在.*?下/g, '');
+desc = desc.replace(/\d+℃/g, '');
+desc = desc.replace(/在.*?催化下/g, '');
+desc = desc.replace(/\s+/g, ' ').trim();
+
+// 添加模块序号
+currentQuestion = `
+<div>模块5/5: 请根据描述写出完整的化学方程式和条件：</div>
+<div class="highlight">${desc}</div>
+`;
+
+currentAnswerEquation = reaction.方程式;
+currentAnswerCondition = reaction.条件 || reaction.condition || "无";
+showQuestion();
+}
+
+// 生成选项
+function generateOptions(correct, allOptions, numOptions = 4) {
+const options = [correct];
+const otherOptions = allOptions.filter(opt => opt !== correct);
+
+// 随机选择其他选项
+for (let i = 0; i < numOptions - 1; i++) {
+if (otherOptions.length > 0) {
+const randomIndex = Math.floor(Math.random() * otherOptions.length);
+options.push(otherOptions[randomIndex]);
+otherOptions.splice(randomIndex, 1);
+}
+}
+
+// 打乱选项顺序
+for (let i = options.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[options[i], options[j]] = [options[j], options[i]];
+}
+
+return options;
+}
+
+// 显示问题
+function showQuestion() {
+questionText.innerHTML = currentQuestion;
+optionsContainer.innerHTML = '';
+
+// 重置输入框
+equationInput.value = '';
+conditionInput.value = '';
+
+// 根据模式显示不同内容
+if (fillBlankMode) {
+// 填空题模式
+equationGroup.style.display = 'block';
+conditionGroup.style.display = 'block';
+mobileShortcuts.style.display = 'flex';
+submitContainer.style.display = 'flex';
+
+// 聚焦到输入框
+equationInput.focus();
+} else {
+// 选择题模式
+equationGroup.style.display = 'none';
+conditionGroup.style.display = 'none';
+mobileShortcuts.style.display = 'none';
+shortcutHint.style.display = 'none';
+submitContainer.style.display = 'none';
+
+// 创建选项按钮
+currentOptions.forEach((option, index) => {
+const button = document.createElement('div');
+button.className = 'option-btn';
+button.innerHTML = `<span style="font-weight:bold; margin-right:10px;">${String.fromCharCode(65 + index)}.</span> ${option}`;
+button.addEventListener('click', () => checkAnswer(index));
+optionsContainer.appendChild(button);
+});
+}
+
+// 隐藏反馈
+feedback.style.display = 'none';
+
+// 根据模块显示/隐藏"下一题"按钮
+if (quizModule === 5) {
+nextBtn.style.display = 'flex';
+nextBtn.disabled = false;
+} else {
+nextBtn.style.display = 'none';
+}
+}
+
+// 检查选择题答案
+function checkAnswer(optionIndex) {
+const selected = currentOptions[optionIndex];
+statusBar.textContent = `您选择了: ${selected}`;
+
+// 更新按钮样式
+document.querySelectorAll('.option-btn').forEach((btn, idx) => {
+btn.classList.remove('correct', 'incorrect');
+if (idx === optionIndex) {
+if (selected === currentAnswer) {
+btn.classList.add('correct');
+} else {
+btn.classList.add('incorrect');
+}
+} else if (currentOptions[idx] === currentAnswer) {
+btn.classList.add('correct');
+}
+});
+
+if (selected === currentAnswer) {
+feedback.className = 'feedback correct';
+feedback.innerHTML = `<h4><i>✓</i>恭喜你，回答正确</h4>`;
+feedback.style.display = 'block';
+statusBar.textContent = `恭喜你，回答正确: ${selected}`;
+
+// 回答正确后自动跳转到下一个模块
+if (quizModule < 5) {
+setTimeout(() => {
+quizModule++;
+switch (quizModule) {
+case 2: functionalGroupChineseQuiz(); break;
+case 3: functionalGroupEnglishQuiz(); break;
+case 4: reactionTypeQuiz(); break;
+case 5: equationWritingQuiz(); break;
+}
+statusBar.textContent = `已进入模块 ${quizModule}/5`;
+}, 1000);
+}
+} else {
+feedback.className = 'feedback incorrect';
+feedback.innerHTML = `<h4><i>✕</i> 很遗憾，回答错误</h4><div>正确答案是: <span class="highlight">${currentAnswer}</span></div>`;
+feedback.style.display = 'block';
+statusBar.textContent = `很遗憾，回答错误。正确答案: ${currentAnswer}`;
+}
+}
+
+// 检查方程式答案
+function checkEquationAnswer() {
+const userEquation = equationInput.value.trim();
+const userCondition = conditionInput.value.trim();
+
+if (!userEquation || !userCondition) {
+alert('请输入完整的方程式和反应条件');
+return;
+}
+
+statusBar.textContent = `您输入的方程式: ${userEquation}, 条件: ${userCondition}`;
+
+// 检查答案
+const equationCorrect = userEquation === currentAnswerEquation;
+const conditionCorrect = userCondition === currentAnswerCondition;
+
+feedback.style.display = 'block';
+
+if (equationCorrect && conditionCorrect) {
+feedback.className = 'feedback correct';
+feedback.innerHTML = `
+<h4><i>✓</i> 回答正确</h4>
+<div>方程式: <span class="equation">${toSubscript(currentAnswerEquation)}</span></div>
+<div>条件: <span class="highlight">${currentAnswerCondition}</span></div>
+`;
+statusBar.textContent = '回答正确';
+
+// 模块1-4中正确回答后自动跳转
+if (quizModule < 5) {
+setTimeout(() => {
+quizModule++;
+switch (quizModule) {
+case 2: functionalGroupChineseQuiz(); break;
+case 3: functionalGroupEnglishQuiz(); break;
+case 4: reactionTypeQuiz(); break;
+case 5: equationWritingQuiz(); break;
+}
+statusBar.textContent = `已进入模块 ${quizModule}/5`;
+}, 1000);
+}
+} else {
+feedback.className = 'feedback incorrect';
+feedback.innerHTML = `
+<h4><i>✕</i> 回答错误</h4>
+<div>正确答案:</div>
+<div>方程式: <span class="equation">${toSubscript(currentAnswerEquation)}</span></div>
+<div>条件: <span class="highlight">${currentAnswerCondition}</span></div>
+`;
+statusBar.textContent = '回答错误 - 请重新尝试';
+
+// 清空输入框
+equationInput.value = '';
+conditionInput.value = '';
+equationInput.focus();
+}
+}
+
+// 下标转换函数
+function toSubscript(text) {
+let result = '';
+let i = 0;
+
+while (i < text.length) {
+// 处理特殊符号
+if (['=', '+', '-', '≡'].includes(text[i])) {
+result += text[i];
+i++;
+}
+// 处理数字（不转换化学计量数）
+else if (/\d/.test(text[i]) && (i === 0 || [' ', '→', '+', '('].includes(text[i-1]))) {
+result += text[i];
+i++;
+}
+// 转换化学式内部的数字为下标
+else if (/\d/.test(text[i])) {
+result += SUBSCRIPT_MAP[text[i]];
+i++;
+} else {
+result += text[i];
+i++;
+}
+}
+
+// 美化方程式显示
+result = result.replace(/→/g, ' → ').replace(/ \+ /g, ' + ');
+return result;
+}
+
+// 键盘按下事件处理
+function handleKeyDown(event) {
+if (event.key === 'ArrowRight') {
+// 右键按下
+rightPressed = true;
+event.preventDefault();
+if (leftPressed) {
+// 同时按下了左键和右键，插入可逆符号
+insertAtCursor('⇌');
+} else {
+// 只按下了右键，插入箭头
+insertAtCursor('→');
+}
+} else if (event.key === 'ArrowLeft') {
+// 左键按下
+leftPressed = true;
+} else if (event.key === '=' || event.key === 's' || event.key === 'S') {
+// 等号键或S键按下，插入双键
+event.preventDefault();
+insertAtCursor('=');
+} else if (event.key === '-' || event.key === 'e' || event.key === 'E') {
+// 减号键按下或E键按下，插入三键
+event.preventDefault();
+insertAtCursor('≡');
+} else if (event.key === 'q' || event.key === 'Q') {
+// Q键按下，插入箭头
+event.preventDefault();
+insertAtCursor('→');
+} else if (event.key === 'w' || event.key === 'W') {
+// W键按下，插入可逆符号
+event.preventDefault();
+insertAtCursor('⇌');
+} else if (event.key === 'Enter') {
+// 回车键提交答案
+event.preventDefault();
+checkEquationAnswer();
+}
+}
+
+// 键盘释放事件处理
+function handleKeyUp(event) {
+if (event.key === 'ArrowLeft') {
+leftPressed = false;
+} else if (event.key === 'ArrowRight') {
+rightPressed = false;
+}
+}
+
+// 在光标位置插入文本
+function insertAtCursor(text) {
+const start = equationInput.selectionStart;
+const end = equationInput.selectionEnd;
+const value = equationInput.value;
+equationInput.value = value.substring(0, start) + text + value.substring(end);
+equationInput.selectionStart = equationInput.selectionEnd = start + text.length;
+}
+
+// 初始化应用
+window.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
